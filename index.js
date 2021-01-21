@@ -169,7 +169,34 @@ async function collectValues(titles) {
 
 function createContent(fileContent) {
 
-   
+    var text = `# ${fileContent.get('name')}`;
+
+    fileContent.delete('name');
+
+    if (fileContent.has('badge')) {
+        text += `   ${fileContent.get('badge')}`;
+        fileContent.delete('badge');
+    }
+    
+    text += '\n\n';
+
+    if (fileContent.has('Description')) {
+        text += `## Description\n\n${fileContent.get('Description')}\n\n\n\n`;
+        fileContent.delete('Description');
+    }
+
+    var table = "## Table of content\n\n";
+    var rest = "";
+
+    for (let [key, value] of fileContent) {
+
+        table += `### [${key}](##-${key.split(" ").join("-")})\n\n`;
+        rest += `## ${key}\n\n${value}\n\n\n\n`;
+    }
+
+    text += table + '\n\n' + rest;
+
+    return text;
 }
 
 
