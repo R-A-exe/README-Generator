@@ -200,9 +200,8 @@ function createContent(fileContent) {
 }
 
 
-function printContent() {
-
-
+function printContent(text) {
+    fs.writeFile('README.md', text, err => err ? console.log("Something went wrong, please ensure that all dependencies are installed.") : null);
 }
 
 async function loadLicenses() {
@@ -214,7 +213,7 @@ async function loadLicenses() {
 
     } catch (e) {
         if (e.errno == -2) {
-            console.log("Error encountered, please ensure that all assets are in the assets folder, then try again.")
+            console.log("Error encountered, please ensure that all assets are in the assets folder, and all dependencies are installed.")
         } else {
             console.log(e);
         }
@@ -226,7 +225,7 @@ async function loadLicenses() {
     const titles = await collectTitles();
     const fileContent = await collectValues(titles);
     const text = createContent(fileContent);
-    const print = fs.writeFile('test.md', text, err => err ? console.log("ERROR") : null);
+    printContent(text);
 })();
 
 
