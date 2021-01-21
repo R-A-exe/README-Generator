@@ -4,8 +4,6 @@ const util = require('util');
 
 var licenses = null;
 
-var fileContent = { name: "", email: "", github: "", description: "", table: new Array(), installation: "", usage: "", license: "", contributing: "", tests: "", questions: "", custom: new Map() };
-
 async function collectTitles() {
     const result = await inquirer.prompt([
         {
@@ -22,10 +20,11 @@ async function collectTitles() {
 
 async function collectValues(titles) {
 
+    var fileContent = new Map();
+
     const questions = ['projectName', ...titles];
 
     for (question of questions) {
-
         switch (question) {
 
             case 'projectName':
@@ -36,7 +35,7 @@ async function collectValues(titles) {
                         message: 'What is the name of your project?'
                     }
                 ]);
-                fileContent.name = question.value;
+                fileContent.set('name', question.value);
                 break;
 
             case 'Description':
@@ -47,7 +46,7 @@ async function collectValues(titles) {
                         message: 'Write a description of the function of your project.'
                     }
                 ]);
-                fileContent.description = question.value;
+                fileContent.set('Description', question.value);
                 break;
 
             case 'Installation':
@@ -58,7 +57,7 @@ async function collectValues(titles) {
                         message: 'Write the installation process of your project.'
                     }
                 ]);
-                fileContent.installation = question.value;
+                fileContent.set('Installation', question.value);
                 break;
 
             case 'Usage':
@@ -69,7 +68,7 @@ async function collectValues(titles) {
                         message: 'Describe the usage of your project.'
                     }
                 ]);
-                fileContent.usage = question.value;
+                fileContent.set('Usage', question.value);
                 break;
 
             case 'License':
@@ -85,7 +84,9 @@ async function collectValues(titles) {
                         message: 'Choose the lisence for your projects.'
                     }
                 ]);
-                fileContent.license = question.value;
+                var license = licenses.licenses[licenses.list.indexOf(question.value)];
+                fileContent.set('License', `This project is covered under the following license: ${question.value}. For more information, please visit [${license.url}](${license.url})`);
+                fileContent.set('badge', license.markdown);
                 break;
 
             case 'Contributing':
@@ -96,7 +97,7 @@ async function collectValues(titles) {
                         message: 'Write the guidelines for contributing to your project.'
                     }
                 ]);
-                fileContent.contributing = question.value;
+                fileContent.set('Contributing', question.value);
                 break;
 
             case 'Tests':
@@ -107,7 +108,7 @@ async function collectValues(titles) {
                         message: 'Write the testing instructions for your project.'
                     }
                 ]);
-                fileContent.tests = question.value;
+                fileContent.set('Tests', question.value);
                 break;
 
             case 'Questions':
@@ -130,9 +131,7 @@ async function collectValues(titles) {
 
 
                 ]);
-                fileContent.email = question.email;
-                fileContent.github = question.github;
-                fileContent.questions = question.questions;
+                fileContent.set('Questions', `Email: ${question.email}\n\nGithub: ${question.github}\n\n${question.questions}`);
                 break;
 
             case 'Custom section':
@@ -150,7 +149,7 @@ async function collectValues(titles) {
                         },
 
                     ]);
-                    fileContent.custom.set(question.title, question.content);
+                    fileContent.set(question.title, question.content);
                     var moreCustom = await inquirer.prompt([
                         {
                             name: 'another',
@@ -158,24 +157,23 @@ async function collectValues(titles) {
                             message: 'Would you like to add another custom field?'
                         }
                     ]);
-                    if(!moreCustom.another){
+                    if (!moreCustom.another) {
                         break;
                     }
                 }
                 break;
         }
     }
-
-    console.log(fileContent);
-
+    return fileContent;
 }
 
-function createContent(){
+function createContent(fileContent) {
 
+   
 }
 
 
-function printContent(){
+function printContent() {
 
 
 }
@@ -197,9 +195,11 @@ async function loadLicenses() {
     }
 }
 
-(async function() {
-    var titles = await collectTitles();
-    collectValues(titles);
+(async function () {
+    const titles = await collectTitles();
+    const fileContent = await collectValues(titles);
+    const text = createContent(fileContent);
+    const print = fs.writeFile('test.md', text, err => err ? console.log("ERROR") : null);
 })();
 
 

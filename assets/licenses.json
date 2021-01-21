@@ -35,7 +35,7 @@
         {
             "name": "Apache 2.0 License",
             "markdown": "[![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)",
-            "url": "(https://opensource.org/licenses/Apache-2.0)"
+            "url": "https://opensource.org/licenses/Apache-2.0"
         },
         {
             "name": "Boost Software License 1.0",
