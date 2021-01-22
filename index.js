@@ -202,6 +202,7 @@ function createContent(fileContent) {
 
 function printContent(text) {
     fs.writeFile('README.md', text, err => err ? console.log("Something went wrong, please ensure that all dependencies are installed.") : null);
+    console.log("All done! Please retrieve your README file from this directory.")
 }
 
 async function loadLicenses() {
