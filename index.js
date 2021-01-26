@@ -100,7 +100,7 @@ async function collectValues(titles) {  //Collect content of each chosen title
                 fileContent.set('Contributing', question.value);
                 break;
 
-            case 'Tests': v//collect project testing if applicable
+            case 'Tests': //collect project testing if applicable
                 var question = await inquirer.prompt([
                     {
                         name: 'value',
